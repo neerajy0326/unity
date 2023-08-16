@@ -1,9 +1,10 @@
 from django.shortcuts import render , redirect
 from .forms import UserRegistrationForm
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model ,authenticate
 import random
 from .models import CustomUser
+from django.contrib.auth import authenticate, login ,logout 
 
 def home_page(request):
     return render(request, 'index.html')
@@ -42,7 +43,7 @@ def open_account(request):
             user.save()
             
             messages.success(request, 'Account has been successfully created for user ' + full_name)
-            return redirect('login')
+            return redirect('login_page')
         else:
             
 
@@ -52,5 +53,32 @@ def open_account(request):
 
     return render(request, 'open_account.html', {'form': form})
 
-def login(request):   
-    return render(request, 'login.html')
+def login_page(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('profile')
+        else:
+            messages.error(request, 'Invalid email or password.')
+
+    return render(request, 'login_page.html')
+
+def profile(request):
+   
+    return render(request,'profile.html')
+
+def logout_view(request):
+    logout(request) 
+    return redirect('home_page')
+
+
+def delete_account(request):
+
+         user = request.user
+         user.delete()
+         logout(request)  
+         return redirect('home_page')  

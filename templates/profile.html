@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>Account number is : {{ user.account_number }}</p>
+    <a href="{% url 'logout' %}"> <button type="button" class="btn btn-secondary">Logout</button></a>
+    
+                  
+                  
+    <a href="{% url 'delete_account' %}">
+        <button type="button" class="btn btn-secondary">Delete account</button>
+       </a>
+       
+   
+</body>
+</html>
