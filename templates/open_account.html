@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title> Open Account </title>
+    <link rel="stylesheet" href="{% static 'style2.css' %}">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+<body>
+  <div class="container">
+    <div class="title">Registration</div>
+    <div class="content">
+        <form method="post" action="{% url 'open_account' %}">
+            
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Full Name</span>
+            <input type="text" name="full_name" placeholder="Enter your name" required>
+     
+
+          </div>
+          <div class="input-box">
+            <span class="details">Username</span>
+            <input type="text" name="username" placeholder="Enter your username" required>
+
+
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="text" name="email" placeholder="Enter your email" required>
+
+          </div>
+          <div class="input-box">
+            <span class="details">Phone Number</span>
+            <input type="text" name="contact_number" placeholder="Enter your number" required>
+ 
+          </div>
+          <div class="input-box">
+            <span class="details">Date of Birth</span>
+            <input type="date" name="date_of_birth" placeholder="Select your date of birth" required>
+
+          </div>
+        
+          <div class="input-box">
+            <span class="details">Account Type</span>
+            <select class="account-type-select" name="account_type" required>
+
+              <option value="" disabled selected>Select an account type</option>
+              <option value="savings">Savings Account</option>
+              <option value="checking">Checking Account</option>
+              <option value="credit">Credit Card</option>
+              
+
+            </select>
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="text" name="password" placeholder="Enter your password" required>
+          </div>
+         
+        </div>
+        <div class="gender-details">
+          
+          <input type="radio" name="gender" id="dot-1" value="male">
+         
+
+          <input type="radio" name="gender" id="dot-2" value="female">
+     
+
+          <input type="radio" name="gender" id="dot-3" value="prefer_not_to_say">
+       
+
+        
+          <span class="gender-title">Gender</span>
+          <div class="category">
+            <label for="dot-1">
+            <span class="dot one"></span>
+            <span class="gender">Male</span>
+          </label>
+          <label for="dot-2">
+            <span class="dot two"></span>
+            <span class="gender">Female</span>
+          </label>
+          <label for="dot-3">
+            <span class="dot three"></span>
+            <span class="gender">Prefer not to say</span>
+            </label>
+          </div>
+        </div>
+      
+
+        <div class="input-box">
+            <input type="checkbox" id="terms" required>
+            <label for="terms">I accept the <a href="#">Terms and Conditions</a></label>
+          </div>
+        <div class="button">
+          <input type="submit" value="Register">
+        </div>
+      </form>
+      Have an account ? <a href="{% url 'login' %}" class="login-btn">Login</a> instead
+      <br>
+                      Back to <a href="{% url 'home_page' %}" class="login-btn">Home</a> page
+      
+    </div>
+  </div>
+
+</body>
+</html>
