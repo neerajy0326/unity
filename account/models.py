@@ -16,8 +16,8 @@ GENDER_CHOICES = (
 
 ACCOUNT_TYPE_CHOICES = (
     ('savings', 'Savings Account'),
-    ('checking', 'Checking Account'),
-    ('credit', 'Credit Card'),
+    ('current', 'Current Account'),
+    
 )  
 
 class CustomUserManager(BaseUserManager):
@@ -39,7 +39,7 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, contact_number, full_name, username, password, **extra_fields)
+        return self.create_user(email, username, full_name ,contact_number, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
@@ -77,6 +77,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES ,default='none')
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE_CHOICES , default='none')
     account_number = models.CharField(max_length=4, unique=True, blank=True, null=True)
+    ifsc = models.CharField(max_length=5, blank=True, null=True)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    pin = models.CharField(max_length=4, blank=True)
+
  
       
     

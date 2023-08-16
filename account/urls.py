@@ -8,7 +8,11 @@ urlpatterns = [
     path('login_page', views.login_page, name='login_page'),
     path('profile' ,views.profile , name='profile'),
     path('logout', views.logout_view, name='logout'),
-    path('delete_account', views.delete_account, name='delete_account'),
+    path('profile/transfer_money', views.transfer_money, name='transfer_money'),
+    path('profile/transfer_money/enter_pin', views.enter_pin, name='enter_pin'),
+
+    
+  
 
     
 ]

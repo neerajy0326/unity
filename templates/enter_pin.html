@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+    <link rel="stylesheet" href="{% static 'style5.css' %}">
+  </head>
+  <body>
+    <section class="container">
+      <header>Enter PIN </header>
+      <form method="post" class="form">
+       
+
+        <div class="column">
+          <div class="input-box">
+            <label>PIN</label>
+            <input type="password"  name="pin" placeholder="Enter your PIN" required />
+          </div>
+        
+        </div>
+       
+       
+        <button type="submit">Send money</button>
+      </form>
+    </section>
+  </body>
+</html>

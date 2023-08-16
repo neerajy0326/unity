@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model ,authenticate
 import random
 from .models import CustomUser
 from django.contrib.auth import authenticate, login ,logout 
+from decimal import Decimal
 
 def home_page(request):
     return render(request, 'index.html')
@@ -32,10 +33,12 @@ def open_account(request):
             date_of_birth = form.cleaned_data['date_of_birth']
             gender = form.cleaned_data['gender']
             account_type = form.cleaned_data['account_type']
+            ifsc = random.choice(['UFB01', 'UFB02', 'UFB03'])
+
 
             user = get_user_model().objects.create_user(
                 email=email, contact_number=contact_number, full_name=full_name, username=username, 
-                date_of_birth=date_of_birth, gender=gender, account_type=account_type
+                date_of_birth=date_of_birth, gender=gender, account_type=account_type , ifsc=ifsc
             )
             user.set_password(password)
             account_number = generate_unique_account_number()
@@ -76,9 +79,70 @@ def logout_view(request):
     return redirect('home_page')
 
 
-def delete_account(request):
+def transfer_money(request):
+    if request.method == 'POST':
+        account_number = request.POST.get('account_number')
+        ifsc = request.POST.get('ifsc')
+        
+        amount = Decimal(request.POST.get('amount'))
+        
+       
+        recipient = CustomUser.objects.filter(account_number=account_number, ifsc=ifsc).first()
+        sender = request.user
+        print(sender)
+        print(recipient)
 
-         user = request.user
-         user.delete()
-         logout(request)  
-         return redirect('home_page')  
+        if sender.balance is None:
+            print("Sender balance is None")
+        if recipient and sender.balance >= amount:
+
+            amount_float = float(amount)
+            
+            request.session['transfer_details'] = {
+                'user_id': recipient.id,  
+                'amount': amount_float
+            }
+            print(recipient.id)
+            return redirect('enter_pin') 
+    
+    return render(request, 'transfer_money.html')
+
+def enter_pin(request):
+    if request.method == 'POST':
+        pin = request.POST.get('pin')
+        transfer_details = request.session.get('transfer_details')
+        if transfer_details:
+
+
+            user_id = transfer_details['user_id']
+            print(user_id)
+            amount_float = transfer_details['amount']
+            amount = Decimal(str(amount_float))
+            sender = request.user
+            print(sender)
+            
+            
+            
+            
+            if pin == sender.pin: 
+           
+                recipient = CustomUser.objects.get(id=user_id)
+                print(recipient)
+                sender.balance -= amount
+                recipient.balance += amount
+                sender.save()
+                recipient.save()
+               
+                
+              
+                del request.session['transfer_details']
+                
+               
+                messages.success(request, 'Money transferred successfully!')
+                return redirect('profile')  
+            
+            else:
+                messages.error(request, 'Invalid PIN. Please try again.')
+    
+    return render(request, 'enter_pin.html')
+    
