@@ -1,0 +1,54 @@
+{% load static %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+
+<link rel="stylesheet" href="{% static 'style4.css' %}">
+<body>
+{% if user.is_superuser %}
+  <h2>APPROVAL REQUESTS</h2>
+
+
+
+<div class="card mb-4">
+    <div class="card-header">Card approval</div>
+    <div class="card-body p-0">
+       
+        <div class="table-responsive table-billing-history">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="border-gray-200" scope="col">User</th>
+                        <th class="border-gray-200" scope="col">Monthly Salary</th>
+                        <th class="border-gray-200" scope="col">Date Requested</th>
+                        <th class="border-gray-200" scope="col">status</th>
+                        <th class="border-gray-200" scope="col">Action</th>
+                    </tr>
+               
+                </thead>
+                <tbody>
+                    {% for card_request in pending_card_requests %}
+                    <tr>
+                        <td>{{ card_request.user.email }}</td>
+                        <td>{{ card_request.salary }}</td>
+                        <td>{{ card_request.date_requested }}</td>
+                        <td>{{ card_request.status }}</td>
+                        <td>
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <input type="hidden" name="card_request_id" value="{{ card_request.id }}">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                              </form>
+                          </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+</body>

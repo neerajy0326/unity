@@ -1,11 +1,17 @@
 from django.shortcuts import render , redirect
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm ,  CardRequestForm , CardApprovalForm
 from django.contrib import messages
+from django.utils import timezone
 from django.contrib.auth import get_user_model ,authenticate
 import random
-from .models import CustomUser
+from .models import CustomUser , AccountTransaction , CardRequest, CardDetails
 from django.contrib.auth import authenticate, login ,logout 
 from decimal import Decimal
+from django.db.models import Q
+from datetime import date
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.crypto import get_random_string
+
 
 def home_page(request):
     return render(request, 'index.html')
@@ -71,8 +77,19 @@ def login_page(request):
     return render(request, 'login_page.html')
 
 def profile(request):
-   
-    return render(request,'profile.html')
+    user = request.user
+    transactions = AccountTransaction.objects.filter(Q(sender=user) | Q(recipient=user)).order_by('-timestamp')[:10]
+    try:
+        card_details = CardDetails.objects.get(user=user)
+    except CardDetails.DoesNotExist:
+        card_details = None
+
+    context = {
+        'user': user,
+        'transactions': transactions,
+        'card_details': card_details
+    }
+    return render(request,'profile.html' , context)
 
 def logout_view(request):
     logout(request) 
@@ -128,11 +145,13 @@ def enter_pin(request):
            
                 recipient = CustomUser.objects.get(id=user_id)
                 print(recipient)
+                if sender == recipient:
+                   return render(request, 'enter_pin.html', {'error_message': 'You cannot send money to yourself.'})
                 sender.balance -= amount
                 recipient.balance += amount
                 sender.save()
                 recipient.save()
-               
+                AccountTransaction.objects.create(sender=sender, recipient=recipient, amount=amount,timestamp=timezone.now())
                 
               
                 del request.session['transfer_details']
@@ -145,4 +164,88 @@ def enter_pin(request):
                 messages.error(request, 'Invalid PIN. Please try again.')
     
     return render(request, 'enter_pin.html')
+
+def edit_profile(request):
+    return render(request, 'edit_profile.html')
+
+def generate_random_cvv():
+    return get_random_string(length=3, allowed_chars='0123456789')
+
+def admin_card_approval(request):
+    if request.user.is_superuser:
+        pending_card_requests = CardRequest.objects.filter(status="Pending")
+        if request.method == 'POST':
+            form = CardApprovalForm(request.POST)
+            if form.is_valid():
+                approval_status = form.cleaned_data['approval_status']
+                card_request_id = request.POST.get('card_request_id')
+                
+                print(card_request_id)
+                try:
+                    card_request = CardRequest.objects.get(pk=card_request_id)
+                except CardRequest.DoesNotExist:
+                    messages.error(request, 'Card request not found.')
+                else:    
+                   card_request.status = approval_status
+                   card_request.save()
+
+                   if approval_status == 'Approved':
+                       card_balance = form.cleaned_data['card_balance']
+                       if card_balance is None:
+                          messages.error(request, 'Please provide the card balance.')
+                       else:
+                        card_number = get_random_string(length=16, allowed_chars='0123456789')
+                        expiry_date = date.today().replace(year=date.today().year + 3) 
+                        cvv = generate_random_cvv()
+                   
+                        CardDetails.objects.create(user=card_request.user, card_number=card_number, expiry_date=expiry_date,cvv=cvv, card_balance=card_balance)
+
+                        messages.success(request, 'Card request approved/rejected.')
+        else:
+            form = CardApprovalForm()
+        return render(request, 'admin_approval.html', {'pending_card_requests': pending_card_requests, 'form': form})
+    else:
+        return redirect('profile')
     
+
+def apply_page(request):
+    user = request.user
+    try:
+        latest_card_request = CardRequest.objects.filter(user=user).latest('date_requested')
+    except ObjectDoesNotExist:
+        latest_card_request = None
+    try:
+        card_details = CardDetails.objects.get(user=user)
+        card_balance = card_details.card_balance
+    except CardDetails.DoesNotExist:
+        card_balance = None
+    return render(request ,'apply_page.html' ,  {'card_request': latest_card_request , 'card_balance': card_balance})    
+
+
+def user_request_card(request):
+    
+    if request.method == 'POST':
+        form = CardRequestForm(request.POST)
+        if form.is_valid():
+            card_request = form.save(commit=False)
+            card_request.user = request.user
+            card_request.save()
+            return redirect('apply_page') 
+    else:
+        form = CardRequestForm()
+    
+    return render(request, 'apply_card.html', {'form': form})
+
+
+
+def card_details(request):
+    user = request.user
+    try:
+        card_details = CardDetails.objects.get(user=user)
+    except CardDetails.DoesNotExist:
+        card_details = None
+
+    context = {
+        'card_details': card_details
+    }
+    return render(request, 'card_details.html' ,context)

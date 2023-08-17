@@ -24,8 +24,9 @@ SECRET_KEY = 'django-insecure-t1ptfnrd#7axti@f6y^5wjt$y0fpmr#0##46hpulzz+k%a$5(u
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+TIME_ZONE = 'Asia/Kolkata'
+USE_TZ = True
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'account.CustomUser'
 AUTHENTICATION_BACKENDS = [
@@ -42,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account'
+    'account',
+    'sass_processor',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +126,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR,"static")
  ]
-
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

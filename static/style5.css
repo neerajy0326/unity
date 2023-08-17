@@ -82,9 +82,7 @@ body {
 .form :where(.gender input, .gender label) {
   cursor: pointer;
 }
-.gender label {
-  color: #707070;
-}
+
 .address :where(input, .select-box) {
   margin-top: 15px;
 }
@@ -106,12 +104,12 @@ body {
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: rgb(130, 106, 251);
+  background: rgb(121, 255, 161);
 }
 .form button:hover {
-  background: rgb(88, 56, 250);
+  background: rgb(135, 227, 255);
 }
-/*Responsive*/
+
 @media screen and (max-width: 500px) {
   .form .column {
     flex-wrap: wrap;

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import CustomUser, GENDER_CHOICES, ACCOUNT_TYPE_CHOICES
+from .models import CustomUser, CardRequest , GENDER_CHOICES, ACCOUNT_TYPE_CHOICES , PROFESSION_CHOICES
 
 class UserRegistrationForm(forms.ModelForm):
 
@@ -17,4 +17,16 @@ class UserRegistrationForm(forms.ModelForm):
         model = CustomUser
         fields = ['full_name', 'contact_number', 'email', 'username', 'date_of_birth', 'gender', 'account_type', 'password']
 
-   
+class CardApprovalForm(forms.Form):
+    approval_status = forms.ChoiceField(choices=[('Approved', 'Approved'), ('Rejected', 'Rejected')], widget=forms.RadioSelect)
+    card_balance = forms.DecimalField(label='Card Balance', required=False) 
+
+
+class CardRequestForm(forms.ModelForm):
+    profession = forms.CharField(max_length=20, choices=PROFESSION_CHOICES , widget=forms.Select)
+    class Meta:
+        model = CardRequest
+        fields = ['salary' , 'profession' ] 
+
+
+         

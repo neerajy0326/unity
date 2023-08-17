@@ -20,6 +20,14 @@ ACCOUNT_TYPE_CHOICES = (
     
 )  
 
+PROFESSION_CHOICES = (
+     ('Private job', 'Private job'),
+    ('Govt job', 'Govt job'),
+    ('Bussiness', 'Bussiness'),
+    ('Student', 'Student'),
+
+)
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email,username, full_name, contact_number, password=None , **extra_fields):
         if not email:
@@ -117,6 +125,36 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+class AccountTransaction(models.Model):
+    sender = models.ForeignKey(CustomUser, related_name='sent_transactions', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(CustomUser, related_name='received_transactions', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(default=timezone.now)
+    description = models.CharField(max_length=200 , default='Regular Transaction')
+
+
+    def __str__(self):
+        return f"{self.description} ,users {self.sender.username},{self.recipient.username} of Rs {self.amount}" 
     
 
+class CardRequest(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    profession = models.CharField(max_length=20, choices=PROFESSION_CHOICES , default='none')
+    salary = models.DecimalField(max_digits=10, decimal_places=2) 
+    status = models.CharField(max_length=20, default="Pending")
+    date_requested = models.DateTimeField(auto_now_add=True)
 
+
+    def __str__(self):
+        return self.user.username
+
+class CardDetails(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    card_number = models.CharField(max_length=16)
+    expiry_date = models.CharField(max_length=7)  
+    cvv = models.CharField(max_length=4)
+    card_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+
+    def __str__(self):
+        return self.user.username
