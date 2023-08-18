@@ -78,7 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'unity.wsgi.application'
-
+PORT = int(os.environ.get('PORT', 8000))
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
