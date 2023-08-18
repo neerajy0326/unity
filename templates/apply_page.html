@@ -49,7 +49,7 @@
                                     <div class="product-info">
                                         {% if card_request %}
                                             {% if card_request.status == "Pending" %}
-                                            <p>Applied for credit card</p>
+                                            <p>Applied for Credit card</p>
                                             <div class="text-lg text-medium {% if card_request.status == 'Pending' %}text-warning{% elif card_request.status == 'Approved' %}text-success{% else %}text-danger{% endif %}">
                                                 Status: {{ card_request.status }}
                                             </div>
@@ -57,11 +57,11 @@
                                             <div class="text-lg text-medium {% if card_request.status == 'Pending' %}text-warning{% elif card_request.status == 'Approved' %}text-success{% else %}text-danger{% endif %}">
                                                 Status: {{ card_request.status }}
                                             </div>
-                                            <p>Card Balance: {{ card_balance }}</p>
+                                            <p> Credit Card Balance: {{ card_balance }}</p>
                                             {% else %}
                                             
                                             <h4 class="product-title"><a href="{% url 'user_request_card' %}">Apply again for Credit Card</a></h4>
-                                            <p class="text-danger" >Your credit card request has been rejected. Apply again for credit card</p>
+                                            <p class="text-danger" >Your credit card request has been rejected. Apply again for Credit card</p>
                                             {% endif %}
                                            
                                         {% else %}
@@ -83,7 +83,7 @@
                                     <a class="product-thumb" href="#"><img src="https://bfsi.eletsonline.com/wp-content/uploads/2019/12/Banks-issued-63-percent-higher-debit-cards-in-2019-than-in-2015-RBI-Data.jpg" alt="Product"></a>
                                     <div class="product-info">
                                         <h4 class="product-title"><a href="#">Apply for Debit Card</a></h4>
-                                        <div class="text-lg text-medium text-muted"></div>
+                                        <div class="text-lg text-medium text-muted">Currently Unavailable</div>
                                        
                                     </div>
                                 </div>

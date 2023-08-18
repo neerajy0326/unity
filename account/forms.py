@@ -23,7 +23,7 @@ class CardApprovalForm(forms.Form):
 
 
 class CardRequestForm(forms.ModelForm):
-    profession = forms.CharField(max_length=20, choices=PROFESSION_CHOICES , widget=forms.Select)
+    profession = forms.ChoiceField(choices=PROFESSION_CHOICES , widget=forms.Select)
     class Meta:
         model = CardRequest
         fields = ['salary' , 'profession' ] 

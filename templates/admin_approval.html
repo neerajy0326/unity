@@ -8,7 +8,9 @@
   <h2>APPROVAL REQUESTS</h2>
 
 
-
+  {% if error %}
+  <p class="error" style="color: red;">{{ error }}</p>
+  {% endif %}
 <div class="card mb-4">
     <div class="card-header">Card approval</div>
     <div class="card-body p-0">
@@ -19,7 +21,8 @@
                     <tr>
                         <th class="border-gray-200" scope="col">User</th>
                         <th class="border-gray-200" scope="col">Monthly Salary</th>
-                        <th class="border-gray-200" scope="col">Date Requested</th>
+                        <th class="border-gray-200" scope="col">Profession</th>
+                        <th class="border-gray-200" scope="col">Time Requested</th>
                         <th class="border-gray-200" scope="col">status</th>
                         <th class="border-gray-200" scope="col">Action</th>
                     </tr>
@@ -30,6 +33,7 @@
                     <tr>
                         <td>{{ card_request.user.email }}</td>
                         <td>{{ card_request.salary }}</td>
+                        <td>{{ card_request.profession }}</td>
                         <td>{{ card_request.date_requested }}</td>
                         <td>{{ card_request.status }}</td>
                         <td>

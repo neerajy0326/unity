@@ -188,12 +188,14 @@ def admin_card_approval(request):
                 else:    
                    card_request.status = approval_status
                    card_request.save()
+                  
 
                    if approval_status == 'Approved':
                        card_balance = form.cleaned_data['card_balance']
                        if card_balance is None:
                           messages.error(request, 'Please provide the card balance.')
                        else:
+                        
                         card_number = get_random_string(length=16, allowed_chars='0123456789')
                         expiry_date = date.today().replace(year=date.today().year + 3) 
                         cvv = generate_random_cvv()
