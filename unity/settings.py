@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-   
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -120,13 +120,17 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR,"static")
  ]
+
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
 COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
