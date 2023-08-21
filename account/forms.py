@@ -26,7 +26,7 @@ class CardRequestForm(forms.ModelForm):
     profession = forms.ChoiceField(choices=PROFESSION_CHOICES , widget=forms.Select)
     class Meta:
         model = CardRequest
-        fields = ['salary' , 'profession' ] 
+        fields = ['salary' , 'profession'  , 'card_limit' ] 
 
 
          

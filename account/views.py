@@ -168,6 +168,9 @@ def enter_pin(request):
 def edit_profile(request):
     return render(request, 'edit_profile.html')
 
+def tandc(request):
+    return render(request, 'tandc.html')
+
 def generate_random_cvv():
     return get_random_string(length=3, allowed_chars='0123456789')
 
@@ -180,7 +183,7 @@ def admin_card_approval(request):
                 approval_status = form.cleaned_data['approval_status']
                 card_request_id = request.POST.get('card_request_id')
                 
-                print(card_request_id)
+                
                 try:
                     card_request = CardRequest.objects.get(pk=card_request_id)
                 except CardRequest.DoesNotExist:
@@ -192,6 +195,7 @@ def admin_card_approval(request):
 
                    if approval_status == 'Approved':
                        card_balance = form.cleaned_data['card_balance']
+                       
                        if card_balance is None:
                           messages.error(request, 'Please provide the card balance.')
                        else:
@@ -199,6 +203,9 @@ def admin_card_approval(request):
                         card_number = get_random_string(length=16, allowed_chars='0123456789')
                         expiry_date = date.today().replace(year=date.today().year + 3) 
                         cvv = generate_random_cvv()
+                        fee = Decimal('500.00')
+                        card_request.user.balance -= fee
+                        card_request.user.save()
                    
                         CardDetails.objects.create(user=card_request.user, card_number=card_number, expiry_date=expiry_date,cvv=cvv, card_balance=card_balance)
 
@@ -218,10 +225,11 @@ def apply_page(request):
         latest_card_request = None
     try:
         card_details = CardDetails.objects.get(user=user)
-        card_balance = card_details.card_balance
+        
     except CardDetails.DoesNotExist:
-        card_balance = None
-    return render(request ,'apply_page.html' ,  {'card_request': latest_card_request , 'card_balance': card_balance})    
+        card_details = None
+    print(card_details)    
+    return render(request ,'apply_page.html' ,  {'card_request': latest_card_request , 'card_details': card_details})    
 
 
 def user_request_card(request):
@@ -229,10 +237,14 @@ def user_request_card(request):
     if request.method == 'POST':
         form = CardRequestForm(request.POST)
         if form.is_valid():
-            card_request = form.save(commit=False)
-            card_request.user = request.user
-            card_request.save()
-            return redirect('apply_page') 
+            user_balance = request.user.balance
+            if user_balance >= 500.00:
+              card_request = form.save(commit=False)
+              card_request.user = request.user
+              card_request.save()
+              return redirect('apply_page')
+            else: 
+                form.add_error(None , "You need a minimum balance of Rs. 500 to apply for a card.")
     else:
         form = CardRequestForm()
     

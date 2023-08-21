@@ -15,6 +15,7 @@ urlpatterns = [
     path('profile/apply_page', views.apply_page, name='apply_page'),
     path('profile/user_request_card', views.user_request_card, name='user_request_card'),
     path('profile/card_details', views.card_details, name='card_details'),
+    path('profile/user_request_card/t&c', views.tandc, name='tandc'),
 
 
     

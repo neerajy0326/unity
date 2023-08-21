@@ -86,7 +86,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE_CHOICES , default='none')
     account_number = models.CharField(max_length=4, unique=True, blank=True, null=True)
     ifsc = models.CharField(max_length=5, blank=True, null=True)
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    balance = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     pin = models.CharField(max_length=4, blank=True)
 
  
@@ -143,6 +143,7 @@ class CardRequest(models.Model):
     salary = models.DecimalField(max_digits=10, decimal_places=2) 
     status = models.CharField(max_length=20, default="Pending")
     date_requested = models.DateTimeField(auto_now_add=True)
+    card_limit = models.CharField(max_length=20 , default="0")
 
 
     def __str__(self):
